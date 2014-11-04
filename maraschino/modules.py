@@ -24,31 +24,10 @@ from maraschino.models import Module, XbmcServer, RecentlyAdded, NewznabSite
 # poll and delay are user-editable and saved in the database - the values here are the defaults
 # settings are also taken from the database - the values here are defaults
 # if static = True then poll and delay are ignored
-module_base_path = os.path.join(maraschino.DATA_DIR, 'modules')
-for mod in maraschino.MODULES:
-    ini_path = '{0}.ini'.format(os.path.join(module_base_path, mod))
-    print '{0} - {1}'.format(ini_path, os.path.getsize(ini_path))
-    if os.path.getsize(ini_path) <= 0:
-        logger.log('{0} need no extra config, skipping'.format(mod), 'DEBUG')
-        pass
-    else:
-        datafile = open(ini_path, 'r+')
-        try:
-            data
-        except NameError:
-            tmp = datafile.read()
-            data = copy.copy(tmp)
-            logger.log('{0} loaded'.format(mod), 'DEBUG')
-            print data
-        else:
-            tmp = datafile.read()
-            data = data & copy.copy(tmp)
-            logger.log('{0} loaded'.format(mod), 'DEBUG')
-            print data
-        datafile.close()
 
-AVAILABLE_MODULES = data
 
+AVAILABLE_MODULES = [str(maraschino.MODULES_CONF)]
+print AVAILABLE_MODULES
 MISC_SETTINGS = [
     {
         'key': 'show_currently_playing',

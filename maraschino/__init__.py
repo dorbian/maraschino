@@ -45,6 +45,7 @@ COMMITS_BEHIND = 0
 COMMITS_COMPARE_URL = ''
 FIRST_RUN = 0
 MODULES = []
+MODULES_CONF = ''
 
 def initialize():
     """Init function for this module"""
@@ -52,7 +53,7 @@ def initialize():
 
         global __INITIALIZED__, app, FULL_PATH, RUNDIR, ARGS, DAEMON, PIDFILE, VERBOSE, LOG_FILE, LOG_DIR, logger, PORT, SERVER, DATABASE, AUTH, \
                 UPDATER, CURRENT_COMMIT, LATEST_COMMIT, COMMITS_BEHIND, COMMITS_COMPARE_URL, USE_GIT, WEBROOT, HOST, KIOSK, DATA_DIR, SCRIPT_DIR, \
-                THREADS, FIRST_RUN, MODULES
+                THREADS, FIRST_RUN, MODULES, MODULES_CONF
 
         if __INITIALIZED__:
             return False
@@ -152,11 +153,32 @@ def initialize():
         SERVER = wsgiserver.CherryPyWSGIServer((HOST, PORT), d)
 
         #Modular modules
+
         module_dir = os.path.join(DATA_DIR, 'modules')
         for path, dirs, files in os.walk(module_dir):
             for name in files:
                 if name.endswith('.ini'):
                     MODULES.append(name.replace('.ini', ''))
+        data = ""
+        for mod in MODULES:
+            ini_path = '{0}.ini'.format(os.path.join(module_dir, mod))
+            if os.path.getsize(ini_path) <= 0:
+                #logger.log('{0} need no extra config, skipping'.format(mod), 'DEBUG')
+                pass
+            else:
+                datafile = open(ini_path, 'r+')
+                datafile.seek(0)
+                for line in datafile:
+                    line = map(lambda s: s.strip(), line)
+                    print line
+                    data = '{0},{1}'.format(data, line)
+                #tmp.replace('\n,', '')
+                #tmp = str(tmp)
+                #data = '{0},{1}'.format(data, tmp.strip())
+                    #logger.log('{0} loaded'.format(mod), 'DEBUG')
+
+        #data = data.replace('\n', '')
+        MODULES_CONF = data
         logger.log(MODULES, "DEBUG")
 
         __INITIALIZED__ = True
