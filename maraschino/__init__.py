@@ -169,9 +169,7 @@ def initialize():
                 datafile = open(ini_path, 'r+')
                 datafile.seek(0)
                 for line in datafile:
-                    line = map(lambda s: s.strip(), line)
-                    print line
-                    data = '{0},{1}'.format(data, line)
+                    data = '{0},{1}'.format(data, line.decode('utf_8'))
                 #tmp.replace('\n,', '')
                 #tmp = str(tmp)
                 #data = '{0},{1}'.format(data, tmp.strip())
