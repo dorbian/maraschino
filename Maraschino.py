@@ -64,6 +64,7 @@ def shutdown_session(exception=None):
 
 import maraschino
 
+
 def main():
     """Main function that is called at the startup of Maraschino."""
     from optparse import OptionParser

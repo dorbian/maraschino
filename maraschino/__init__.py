@@ -47,6 +47,7 @@ FIRST_RUN = 0
 MODULES = []
 MODULES_CONF = ''
 
+
 def initialize():
     """Init function for this module"""
     with INIT_LOCK:
@@ -138,6 +139,31 @@ def initialize():
                 'password': password
             }
 
+        #Modular modules
+        module_dir = os.path.join(DATA_DIR, 'modules')
+        for path, dirs, files in os.walk(module_dir):
+            for name in files:
+                if name.endswith('.ini'):
+                    MODULES.append(name.replace('.ini', ''))
+        for mod in MODULES:
+            ini_path = '{0}.ini'.format(os.path.join(module_dir, mod))
+            if os.path.getsize(ini_path) <= 0:
+                pass
+            else:
+                try:
+                    data
+                except NameError:
+                    with open(ini_path, 'rb') as ini_file:
+                        data = "{0}".format(ini_file.read())
+                else:
+                    with open(ini_path, 'rb') as ini_file:
+                        data = "{0},{1}".format(data, ini_file.read())
+        #data = "{0}".format(data)
+        data = data.replace('\n', '').replace('\r', '').replace('    ', '').replace("\'", "'")
+        print data.split(',')
+        MODULES_CONF = [data]
+        print MODULES_CONF
+
         # Set up web server
         if '--webroot' not in str(ARGS):
             WEBROOT = get_setting_value('maraschino_webroot')
@@ -151,33 +177,6 @@ def initialize():
         else:
             d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
         SERVER = wsgiserver.CherryPyWSGIServer((HOST, PORT), d)
-
-        #Modular modules
-
-        module_dir = os.path.join(DATA_DIR, 'modules')
-        for path, dirs, files in os.walk(module_dir):
-            for name in files:
-                if name.endswith('.ini'):
-                    MODULES.append(name.replace('.ini', ''))
-        data = ""
-        for mod in MODULES:
-            ini_path = '{0}.ini'.format(os.path.join(module_dir, mod))
-            if os.path.getsize(ini_path) <= 0:
-                #logger.log('{0} need no extra config, skipping'.format(mod), 'DEBUG')
-                pass
-            else:
-                datafile = open(ini_path, 'r+')
-                datafile.seek(0)
-                for line in datafile:
-                    data = '{0},{1}'.format(data, line.decode('utf_8'))
-                #tmp.replace('\n,', '')
-                #tmp = str(tmp)
-                #data = '{0},{1}'.format(data, tmp.strip())
-                    #logger.log('{0} loaded'.format(mod), 'DEBUG')
-
-        #data = data.replace('\n', '')
-        MODULES_CONF = data
-        logger.log(MODULES, "DEBUG")
 
         __INITIALIZED__ = True
         return True

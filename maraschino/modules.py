@@ -26,8 +26,8 @@ from maraschino.models import Module, XbmcServer, RecentlyAdded, NewznabSite
 # if static = True then poll and delay are ignored
 
 
-AVAILABLE_MODULES = [str(maraschino.MODULES_CONF)]
-print AVAILABLE_MODULES
+AVAILABLE_MODULES = copy.copy(maraschino.MODULES_CONF)
+print type(AVAILABLE_MODULES)
 MISC_SETTINGS = [
     {
         'key': 'show_currently_playing',
@@ -74,7 +74,7 @@ MISC_SETTINGS = [
         'description': 'Module title color (hexadecimal)',
     },
 ]
-
+print type(MISC_SETTINGS)
 SERVER_SETTINGS = [
     {
         'key': 'maraschino_username',
@@ -124,6 +124,7 @@ SEARCH_SETTINGS = [
     },
 ]
 
+
 @app.route('/xhr/add_module_dialog')
 @requires_auth
 def add_module_dialog():
@@ -133,14 +134,14 @@ def add_module_dialog():
 
     # filter all available modules that are not currently on the page
     for module_on_page in modules_on_page:
+        print available_modules
         for available_module in available_modules:
+            print available_module['name']
             if module_on_page.name == available_module['name']:
                 available_modules.remove(available_module)
                 break
-
-    return render_template('dialogs/add_module_dialog.html',
-        available_modules = available_modules,
-    )
+    print available_modules
+    return render_template('dialogs/add_module_dialog.html', available_modules=available_modules)
 
 @app.route('/xhr/add_module', methods=['POST'])
 @requires_auth
@@ -157,7 +158,6 @@ def add_module():
 
         if not module_info:
             raise Exception
-
     except:
         return jsonify({ 'status': 'error' })
 
@@ -190,9 +190,7 @@ def add_module():
     # the rendered module
 
     if module_info['static'] and not 'settings' in module_info:
-        return render_template('placeholder_template.html',
-            module = module_info
-        )
+        return render_template('placeholder_template.html', module=module_info)
 
     # otherwise return the rendered module settings dialog
 
@@ -261,9 +259,7 @@ def module_settings_dialog(name):
                 if 'xbmc_servers' in s:
                     s['options'] = module_get_xbmc_servers()
 
-        return render_template('dialogs/module_settings_dialog.html',
-            module = module,
-        )
+        return render_template('dialogs/module_settings_dialog.html', module=module)
 
     return jsonify({ 'status': 'error' })
 
@@ -347,6 +343,7 @@ def extra_settings_dialog(dialog_type, updated=False):
 
     if dialog_type == 'search_settings':
         settings = copy.copy(SEARCH_SETTINGS)
+        print settings
         dialog_title = 'Search settings'
         dialog_text = 'N.B. With search enabled, you can press \'ALT-s\' to display the search module.'
         dialog_extra = NewznabSite.query.order_by(NewznabSite.id)
