@@ -27,7 +27,7 @@ from maraschino.models import Module, XbmcServer, RecentlyAdded, NewznabSite
 
 
 AVAILABLE_MODULES = copy.copy(maraschino.MODULES_CONF)
-print type(AVAILABLE_MODULES)
+
 MISC_SETTINGS = [
     {
         'key': 'show_currently_playing',
@@ -74,7 +74,7 @@ MISC_SETTINGS = [
         'description': 'Module title color (hexadecimal)',
     },
 ]
-print type(MISC_SETTINGS)
+
 SERVER_SETTINGS = [
     {
         'key': 'maraschino_username',
