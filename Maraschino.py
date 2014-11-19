@@ -47,10 +47,8 @@ def import_modules():
         module = 'modules.{0}'.format(mod)
         try:
             __import__(module)
-            #maraschino.logger.log('Module {0} available'.format(module), 'DEBUG')
         except ImportError:
             pass
-            #maraschino.logger.log('Unable to import module:{0}'.format(module), 'DEBUG')
     """All modules that are available in Maraschino are at this point imported."""
     import mobile
     import xbmcmm

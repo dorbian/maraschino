@@ -24,7 +24,7 @@ PORT = None
 DATABASE = None
 INIT_LOCK = threading.Lock()
 __INITIALIZED__ = False
-DEVELOPMENT = True
+DEVELOPMENT = False
 SCHEDULE = Scheduler()
 WEBROOT = ''
 logger = None
@@ -143,7 +143,6 @@ def initialize():
 
         #Modular modules
         module_dir = os.path.join(DATA_DIR, 'modules')
-        print DATA_DIR
         for path, dirs, files in os.walk(module_dir):
             for name in files:
                 if name.endswith('.ini'):
@@ -166,7 +165,6 @@ def initialize():
                     pass
                 conf_imp = ''
         MODULES_CONF = data
-
 
         # Set up web server
         if '--webroot' not in str(ARGS):

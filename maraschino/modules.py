@@ -134,13 +134,10 @@ def add_module_dialog():
 
     # filter all available modules that are not currently on the page
     for module_on_page in modules_on_page:
-        print available_modules
         for available_module in available_modules:
-            print available_module['name']
             if module_on_page.name == available_module['name']:
                 available_modules.remove(available_module)
                 break
-    print available_modules
     return render_template('dialogs/add_module_dialog.html', available_modules=available_modules)
 
 @app.route('/xhr/add_module', methods=['POST'])
