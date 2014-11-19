@@ -340,7 +340,6 @@ def extra_settings_dialog(dialog_type, updated=False):
 
     if dialog_type == 'search_settings':
         settings = copy.copy(SEARCH_SETTINGS)
-        print settings
         dialog_title = 'Search settings'
         dialog_text = 'N.B. With search enabled, you can press \'ALT-s\' to display the search module.'
         dialog_extra = NewznabSite.query.order_by(NewznabSite.id)
